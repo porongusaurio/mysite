@@ -105,10 +105,21 @@ DATABASES = {
 IS_RENDER = "RENDER" in os.environ
 
 if IS_RENDER:
-    # Render usa PostgreSQL leyendo DATABASE_URL automáticamente
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-# FINAL_CHECK_2025
     
 # NOTA: Al final del archivo, no debe haber ninguna otra línea de DATABASES = { ... }
 
